@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { ActionListSkeleton } from "@/components/ui/Skeleton";
 import {
   listActionCentre,
@@ -43,6 +43,14 @@ function relativeTime(iso: string): string {
 }
 
 export default function ActionCentrePage() {
+  return (
+    <Suspense fallback={<ActionListSkeleton rows={5} />}>
+      <ActionCentreContent />
+    </Suspense>
+  );
+}
+
+function ActionCentreContent() {
   const router = useRouter();
   const search = useSearchParams();
   const [projects, setProjects] = useState<AssignedProject[]>([]);

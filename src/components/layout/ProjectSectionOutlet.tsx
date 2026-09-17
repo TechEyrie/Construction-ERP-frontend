@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 import { TableSkeleton } from "@/components/ui/Skeleton";
 import { PROJECT_NAV_ITEMS } from "@/config/navigation";
 
-type PageComp = ComponentType<Record<string, never>>;
+type PageComp = ComponentType;
 
 /** Top-level sidebar sections → real page modules (preloaded for instant swap). */
 const SECTION_LOADERS: Record<string, () => Promise<{ default: PageComp }>> = {

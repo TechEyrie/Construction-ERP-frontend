@@ -73,7 +73,7 @@ export default function ProjectDocumentsPage() {
           ...(category ? { category } : {}),
           includeSuperseded,
           ...(searchDebounced ? { search: searchDebounced } : {}),
-          signal
+          ...(signal ? { signal } : {})
         });
         if (signal?.aborted) return;
         setRows(items);

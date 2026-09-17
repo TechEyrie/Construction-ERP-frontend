@@ -1,12 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { createInvoice } from "@/lib/api/services/invoiceService";
 import { listWips, type Wip } from "@/lib/api/services/wipService";
+import { TableSkeleton } from "@/components/ui/Skeleton";
 
 export default function NewInvoicePage() {
+  return (
+    <Suspense fallback={<TableSkeleton rows={4} cols={3} />}>
+      <NewInvoiceContent />
+    </Suspense>
+  );
+}
+
+function NewInvoiceContent() {
   const params = useParams<{ projectId: string }>();
   const search = useSearchParams();
   const projectId = params.projectId;

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { isAbortError } from "@/lib/api/abort";
 import { listBoqItems, type BoqItemRow } from "@/lib/api/services/boqService";
@@ -29,6 +29,14 @@ function money(qar: string): string {
 type Tab = "all" | "Submitted" | "over";
 
 export default function ProgressPage() {
+  return (
+    <Suspense fallback={<TableSkeleton rows={6} cols={5} />}>
+      <ProgressContent />
+    </Suspense>
+  );
+}
+
+function ProgressContent() {
   const params = useParams<{ projectId: string }>();
   const search = useSearchParams();
   const projectId = params.projectId;
@@ -70,7 +78,7 @@ export default function ProgressPage() {
         const init = signal ? { signal } : undefined;
         const [s, u] = await Promise.all([
           getProgressSummary(projectId, init),
-          listProgress(projectId, { signal })
+          listProgress(projectId, { ...(signal ? { signal } : {}) })
         ]);
         if (signal?.aborted) return;
         setSummary(s);

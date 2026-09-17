@@ -1,7 +1,7 @@
 "use client";
 
+import { Suspense, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { PageLoader } from "@/components/ui/Skeleton";
 import {
   ackReportPrint,
@@ -11,6 +11,14 @@ import {
 import { getAccessToken } from "@/lib/auth/session";
 
 export default function PrintReportPage() {
+  return (
+    <Suspense fallback={<PageLoader label="Preparing report…" />}>
+      <PrintReportContent />
+    </Suspense>
+  );
+}
+
+function PrintReportContent() {
   const params = useParams<{ projectId: string; reportKey: string }>();
   const search = useSearchParams();
   const [data, setData] = useState<ReportPreview | null>(null);
