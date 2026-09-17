@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { AppProviders } from "@/components/AppProviders";
+import { BRAND_INK_900 } from "@/config/brandColors";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-display" });
@@ -15,7 +16,6 @@ export const metadata: Metadata = {
   title: "Owner Project Control Platform",
   description: "Owner-side construction project control",
   applicationName: "OPC",
-  themeColor: "#0F1E2E",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -24,6 +24,10 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false
   }
+};
+
+export const viewport: Viewport = {
+  themeColor: BRAND_INK_900
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

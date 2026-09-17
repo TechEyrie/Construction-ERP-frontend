@@ -7,6 +7,7 @@ import { trackPageFetch } from "@/lib/api/pageFetchScope";
 /**
  * Runs an async loader with AbortController. Abort on unmount / dep change
  * so leaving a page cancels in-flight HTTP instead of blocking the next page.
+ * `deps` is owned by the caller (same contract as useEffect's dependency list).
  */
 export function useAbortableLoad(
   deps: unknown[],
@@ -26,6 +27,5 @@ export function useAbortableLoad(
       ac.abort();
       untrack();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- caller owns deps list
   }, deps);
 }

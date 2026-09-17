@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { BRAND_INK_900, BRAND_SLATE_50 } from "@/config/brandColors";
 
 /** README_32 — installable web app manifest (M17). */
 export default function manifest(): MetadataRoute.Manifest {
@@ -10,8 +11,8 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     display: "standalone",
     orientation: "any",
-    background_color: "#FAF8F4",
-    theme_color: "#0F1E2E",
+    background_color: BRAND_SLATE_50,
+    theme_color: BRAND_INK_900,
     icons: [
       {
         src: "/icons/icon-192.png",
