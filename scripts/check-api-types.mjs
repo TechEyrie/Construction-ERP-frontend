@@ -37,6 +37,7 @@ function main() {
     encoding: "utf8",
     cwd: root
   });
+  //  Good
   if (result.status !== 0) {
     console.error(result.stderr || result.stdout);
     rmSync(tmp, { recursive: true, force: true });
