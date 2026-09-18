@@ -3,7 +3,15 @@ export function SiteFooter() {
   return (
     <footer className="opc-site-footer" role="contentinfo">
       <p className="opc-site-footer__credit">
-        Developed by <strong>Saqrih Qatar</strong>
+        Developed by{" "}
+        <a
+          className="opc-site-footer__link"
+          href="https://saqrih.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Saqrih Qatar
+        </a>
       </p>
     </footer>
   );

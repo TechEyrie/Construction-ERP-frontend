@@ -4807,9 +4807,14 @@ textarea.opc-progress-touch:focus {
   font-size: var(--text-small);
   color: color-mix(in srgb, var(--text-inverse) 88%, transparent);
 }
-.opc-site-footer__credit strong {
+.opc-site-footer__link {
   color: var(--text-inverse);
   font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--text-inverse) 45%, transparent);
+}
+.opc-site-footer__link:hover {
+  border-bottom-color: var(--text-inverse);
 }
 /* Project shell: align credit with main column (after sidebar) */
 .opc-app-frame:has(.opc-shell) .opc-site-footer {
@@ -4834,7 +4839,7 @@ textarea.opc-progress-touch:focus {
     break-inside: avoid;
   }
   .opc-site-footer__credit,
-  .opc-site-footer__credit strong {
+  .opc-site-footer__link {
     color: #5c0e26;
   }
 }
