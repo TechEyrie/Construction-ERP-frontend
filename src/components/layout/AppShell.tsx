@@ -163,9 +163,15 @@ export function AppShell({ projectId, projects, current, children }: Props) {
         >
           ☰
         </button>
-        <span className="opc-shell-mark" aria-hidden>
-          ◆
-        </span>
+        <Link href="/projects" className="opc-shell-brand" title="All projects">
+          <span className="opc-shell-mark" aria-hidden>
+            ◆
+          </span>
+          <span className="opc-shell-brand-name">Yamaloon</span>
+        </Link>
+        <Link href="/projects" className="opc-shell-all-projects">
+          All projects
+        </Link>
         <ProjectSelector projectId={projectId} projects={projects} current={current} />
         <div className="opc-shell-header-right">
           <button type="button" className="opc-shell-search" disabled title="Search coming soon">

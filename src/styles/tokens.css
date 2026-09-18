@@ -1,27 +1,45 @@
 :root {
-  /* Obsidian Core */
+  /* Obsidian Core — previous ink (restore if needed):
   --ink-950: #0a1622;
   --ink-900: #0f1e2e;
   --ink-800: #1b2c3f;
   --ink-700: #2a3e54;
+  */
+  /* Yamaloon / Qatar maroon chrome */
+  --ink-950: #5c0e26;
+  --ink-900: #8a1538;
+  --ink-800: #a12a4c;
+  --ink-700: #b84463;
 
-  /* Parchment Surfaces */
+  /* Parchment Surfaces — previous warm parchment (restore if needed):
   --slate-50: #faf8f4;
   --slate-100: #f4f1eb;
   --slate-200: #e8e3d9;
   --slate-300: #d4cdbf;
+  */
+  /* Qatar white surfaces */
+  --slate-50: #ffffff;
+  --slate-100: #f7f5f6;
+  --slate-200: #ebe6e8;
+  --slate-300: #d4c8cd;
 
-  /* Gold Accents */
+  /* Gold Accents — previous gold (restore if needed):
   --gold-500: #b8934a;
   --gold-400: #cba85f;
   --gold-300: #e3c98a;
   --gold-100: #f5ebd3;
+  */
+  /* Yamaloon accent = Qatar maroon + soft tints */
+  --gold-500: #8a1538;
+  --gold-400: #a12a4c;
+  --gold-300: #c45a75;
+  --gold-100: #f3e6eb;
 
-  /* Text Hierarchy */
-  --text-primary: #0f1e2e;
+  /* Text Hierarchy — previous primary ink #0f1e2e */
+  --text-primary: #5c0e26;
   --text-secondary: #4a5568;
   --text-tertiary: #7a8494;
-  --text-inverse: #faf8f4;
+  --text-inverse: #ffffff;
 
   /* Semantic Status */
   --status-draft: #6b7280;
@@ -29,19 +47,20 @@
   --status-approved: #2a6b8f;
   --status-success: #1f7a4d;
   --status-warning: #b25a1a;
-  --status-danger: #a83232;
+  --status-danger: #8a1538;
   --status-pending-bg: #fbf3e0;
   --status-approved-bg: #e6f0f7;
   --status-success-bg: #e6f2eb;
-  --status-danger-bg: #fbeaea;
+  --status-danger-bg: #f3e6eb;
   --status-warning-bg: #fbf3e0;
 
-  /* Chart Series */
-  --chart-primary: #b8934a;
-  --chart-secondary: #0f1e2e;
+  /* Chart Series — previous chart-primary gold #b8934a / secondary #0f1e2e */
+  --chart-primary: #8a1538;
+  --chart-secondary: #5c0e26;
   --chart-tertiary: #2a6b8f;
   --chart-quaternary: #1f7a4d;
   --chart-quinary: #a83232;
+
 
   /* Typography — Next font vars set on <html>; fallbacks below */
   --font-serif: var(--font-display), "Fraunces", Georgia, "Times New Roman", serif;
@@ -422,7 +441,8 @@
 
 /* README_05 auth screens */
 .opc-auth {
-  min-height: 100vh;
+  min-height: calc(100vh - var(--opc-footer-h, 52px));
+  min-height: calc(100dvh - var(--opc-footer-h, 52px));
   display: grid;
   grid-template-columns: 1fr;
 }
@@ -475,7 +495,8 @@
   padding: 16px;
 }
 .opc-auth-solo {
-  min-height: 100vh;
+  min-height: calc(100vh - var(--opc-footer-h, 52px));
+  min-height: calc(100dvh - var(--opc-footer-h, 52px));
 }
 .opc-auth-card {
   width: 100%;

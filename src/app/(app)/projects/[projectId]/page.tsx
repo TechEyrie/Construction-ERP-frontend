@@ -10,6 +10,7 @@ import { DashboardSkeleton } from "@/components/ui/Skeleton";
 import { isAbortError } from "@/lib/api/abort";
 import {
   getProjectDashboard,
+  attentionCategoryLabel,
   type DashboardPayload
 } from "@/lib/api/services/dashboardService";
 import { useAbortableLoad } from "@/lib/hooks/useAbortableLoad";
@@ -433,7 +434,7 @@ export default function ProjectDashboardPage() {
         <section className="opc-command-panel opc-command-panel--attention">
           <div className="opc-command-panel__head">
             <div>
-              <p className="opc-command-panel__eyebrow">Exceptions</p>
+              <p className="opc-command-panel__eyebrow">Live exceptions</p>
               <h2 className="opc-command-panel__title">Attention</h2>
             </div>
             <div className="opc-attention-head">
@@ -467,9 +468,15 @@ export default function ProjectDashboardPage() {
                   <Link href={item.deepLink}>
                     <span className="opc-command-attention__top">
                       <span className={`opc-command-attention__sev is-${item.severity}`}>
-                        {item.severity}
+                        {item.severity === "danger"
+                          ? "Danger"
+                          : item.severity === "warning"
+                            ? "Warning"
+                            : "Info"}
                       </span>
-                      <span className="opc-command-attention__cat">{item.category}</span>
+                      <span className="opc-command-attention__cat">
+                        {attentionCategoryLabel(item.category)}
+                      </span>
                     </span>
                     <strong>{item.title}</strong>
                     <span className="opc-command-attention__body">{item.body}</span>

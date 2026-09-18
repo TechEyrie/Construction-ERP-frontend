@@ -34,6 +34,8 @@ export default function ProjectContractsPage() {
   const [ownerName, setOwnerName] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [showBind, setShowBind] = useState(false);
+  /** When true, successful PDF bind continues into activate. */
+  const [activateAfterBind, setActivateAfterBind] = useState(false);
   const [orgs, setOrgs] = useState<OrgRow[]>([]);
   const [busy, setBusy] = useState(false);
   const user = getSessionUser();
@@ -124,12 +126,49 @@ export default function ProjectContractsPage() {
 
   async function onActivate() {
     if (!contract) return;
+    // Must bind executed PDF first — open upload instead of a raw API error.
+    if (contract.signedStatus !== "FullySigned") {
+      setError(null);
+      setActivateAfterBind(true);
+      setShowBind(true);
+      return;
+    }
     setBusy(true);
+    setError(null);
     try {
       await activateContract(projectId, contract.id);
       await reload();
     } catch (err) {
       setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onBindExecuted(file: File) {
+    if (!contract) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const doc = await uploadProjectDocument({
+        projectId,
+        file,
+        category: "Contract",
+        title: `Executed ${contract.reference}`
+      });
+      await bindSignedDocument(projectId, contract.id, {
+        documentId: doc.id,
+        signedStatus: "FullySigned"
+      });
+      setShowBind(false);
+      if (activateAfterBind && contract.status === "Draft") {
+        await activateContract(projectId, contract.id);
+      }
+      setActivateAfterBind(false);
+      await reload();
+    } catch (err) {
+      setError((err as Error).message);
+      throw err;
     } finally {
       setBusy(false);
     }
@@ -196,7 +235,10 @@ export default function ProjectContractsPage() {
             <button
               type="button"
               className="opc-btn opc-btn--primary"
-              onClick={() => setShowBind(true)}
+              onClick={() => {
+                setActivateAfterBind(false);
+                setShowBind(true);
+              }}
             >
               Upload Executed Agreement
             </button>
@@ -208,6 +250,12 @@ export default function ProjectContractsPage() {
             onDownloadSigned={() => void downloadSigned()}
           />
           <p className="opc-contract-user-hint">Signed in as {user?.name ?? "—"}</p>
+          {contract.status === "Draft" && contract.signedStatus !== "FullySigned" ? (
+            <p className="opc-boq-lead" style={{ marginTop: "0.75rem" }}>
+              Tip: click <strong>Activate Contract</strong> — you&apos;ll upload the executed PDF, then
+              activation runs automatically.
+            </p>
+          ) : null}
         </>
       )}
 
@@ -289,29 +337,28 @@ export default function ProjectContractsPage() {
 
       {showBind && contract ? (
         <DocsModalShell
-          title="Upload Executed Agreement"
+          title={activateAfterBind ? "Activate Contract" : "Upload Executed Agreement"}
           ariaLabel="Bind signed document"
-          onClose={() => setShowBind(false)}
+          onClose={() => {
+            setShowBind(false);
+            setActivateAfterBind(false);
+          }}
         >
-          <p className="opc-docs-lead">Uploads as Contract category and marks FullySigned.</p>
-          <FileUploadZone
-            onFile={async (file) => {
-              const doc = await uploadProjectDocument({
-                projectId,
-                file,
-                category: "Contract",
-                title: `Executed ${contract.reference}`
-              });
-              await bindSignedDocument(projectId, contract.id, {
-                documentId: doc.id,
-                signedStatus: "FullySigned"
-              });
-              setShowBind(false);
-              await reload();
-            }}
-          />
+          <p className="opc-docs-lead">
+            {activateAfterBind
+              ? "Upload the executed agreement PDF. Once it is marked FullySigned, the contract activates automatically."
+              : "Uploads as Contract category and marks FullySigned."}
+          </p>
+          <FileUploadZone onFile={(file) => onBindExecuted(file)} />
           <div className="opc-docs-modal-actions">
-            <button type="button" className="opc-docs-action" onClick={() => setShowBind(false)}>
+            <button
+              type="button"
+              className="opc-docs-action"
+              onClick={() => {
+                setShowBind(false);
+                setActivateAfterBind(false);
+              }}
+            >
               Cancel
             </button>
           </div>

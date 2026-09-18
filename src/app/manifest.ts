@@ -4,8 +4,8 @@ import { BRAND_INK_900, BRAND_SLATE_50 } from "@/config/brandColors";
 /** README_32 — installable web app manifest (M17). */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Owner Project Control Platform",
-    short_name: "OPC",
+    name: "Yamaloon",
+    short_name: "Yamaloon",
     description: "Owner-side construction project control",
     start_url: "/",
     scope: "/",

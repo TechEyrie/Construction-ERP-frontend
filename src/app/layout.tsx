@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { AppProviders } from "@/components/AppProviders";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { BRAND_INK_900 } from "@/config/brandColors";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -13,13 +14,13 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Owner Project Control Platform",
+  title: "Yamaloon",
   description: "Owner-side construction project control",
-  applicationName: "OPC",
+  applicationName: "Yamaloon",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "OPC"
+    title: "Yamaloon"
   },
   formatDetection: {
     telephone: false
@@ -34,7 +35,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${fraunces.variable} ${jetbrains.variable}`}>
       <body>
-        <AppProviders>{children}</AppProviders>
+        <AppProviders>
+          <div className="opc-app-frame">
+            <div className="opc-app-frame__body">{children}</div>
+            <SiteFooter />
+          </div>
+        </AppProviders>
       </body>
     </html>
   );

@@ -1,12 +1,5 @@
 import { apiJson } from "@/lib/api/http";
 
-type Envelope<T> = {
-  success: boolean;
-  data: T | null;
-  error: { code: string; message: string } | null;
-  meta?: Record<string, unknown>;
-};
-
 export type DashboardKpis = {
   contractValue: string | null;
   physicalProgressPct: string | null;
@@ -38,6 +31,12 @@ export type AttentionItem = {
   title: string;
   body: string;
   deepLink: string;
+};
+
+export type AttentionPayload = {
+  items: AttentionItem[];
+  countBySeverity: { danger: number; warning: number; info: number };
+  viewerRoleProjection?: string;
 };
 
 export type DashboardPayload = {
@@ -74,4 +73,27 @@ export async function getProjectDashboard(
   init?: RequestInit
 ): Promise<DashboardPayload> {
   return api(`/api/v1/projects/${projectId}/dashboard`, init);
+}
+
+export async function getDashboardAttention(
+  projectId: string,
+  init?: RequestInit
+): Promise<AttentionPayload> {
+  return api(`/api/v1/projects/${projectId}/dashboard/attention`, init);
+}
+
+export function attentionCategoryLabel(category: string): string {
+  const map: Record<string, string> = {
+    physicalFinancialMismatch: "Cash vs progress",
+    liquidityDeficit: "Liquidity",
+    scheduleOverrun: "Schedule",
+    compliance: "Compliance",
+    overdueInvoice: "Overdue invoice",
+    pendingApproval: "Pending approval",
+    overCompletionOverride: "Over-completion"
+  };
+  return (
+    map[category] ??
+    category.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase())
+  );
 }

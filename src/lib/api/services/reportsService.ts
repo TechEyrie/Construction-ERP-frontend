@@ -63,15 +63,31 @@ export async function downloadReport(
     }
     throw Object.assign(new Error(msg), { status: res.status });
   }
-  const blob = await res.blob();
+
+  const mime =
+    res.headers.get("Content-Type") ??
+    (format === "csv"
+      ? "text/csv;charset=utf-8"
+      : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+  const blob = new Blob([await res.arrayBuffer()], { type: mime });
+
   const disp = res.headers.get("Content-Disposition") ?? "";
-  const match = /filename="([^"]+)"/.exec(disp);
-  const name = match?.[1] ?? `${reportKey}.${format}`;
+  const star = /filename\*=UTF-8''([^;]+)/i.exec(disp);
+  const quoted = /filename="([^"]+)"/i.exec(disp);
+  const plain = /filename=([^;]+)/i.exec(disp);
+  const rawName = star?.[1] ?? quoted?.[1] ?? plain?.[1]?.trim();
+  const name = rawName
+    ? decodeURIComponent(rawName.replace(/["']/g, ""))
+    : `${reportKey}.${format}`;
+
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
   a.download = name;
+  a.rel = "noopener";
+  document.body.appendChild(a);
   a.click();
+  a.remove();
   URL.revokeObjectURL(url);
 }
 

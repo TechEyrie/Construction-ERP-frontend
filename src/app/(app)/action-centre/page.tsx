@@ -5,6 +5,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { ActionListSkeleton } from "@/components/ui/Skeleton";
 import {
+  attentionCategoryLabel,
+  getDashboardAttention,
+  type AttentionItem
+} from "@/lib/api/services/dashboardService";
+import {
   listActionCentre,
   markAllNotificationsRead,
   markNotificationRead,
@@ -55,6 +60,7 @@ function ActionCentreContent() {
   const search = useSearchParams();
   const [projects, setProjects] = useState<AssignedProject[]>([]);
   const [data, setData] = useState<ActionCentreData | null>(null);
+  const [exceptions, setExceptions] = useState<AttentionItem[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -84,11 +90,17 @@ function ActionCentreContent() {
       if (isRead !== "all") filters.isRead = isRead;
       if (type) filters.type = type;
       if (severity) filters.severity = severity;
-      const centre = await listActionCentre(filters);
+      const [centre, attention] = await Promise.all([
+        listActionCentre(filters),
+        projectId ? getDashboardAttention(projectId).catch(() => null) : Promise.resolve(null)
+      ]);
       setData(centre);
+      const items = attention?.items ?? [];
+      setExceptions(severity ? items.filter((i) => i.severity === severity) : items);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unable to load Action Centre.");
       setData(null);
+      setExceptions([]);
     } finally {
       setLoading(false);
     }
@@ -225,37 +237,79 @@ function ActionCentreContent() {
 
       {loading ? <ActionListSkeleton rows={5} /> : null}
 
-      {!loading && !error && data && data.items.length === 0 ? (
+      {!loading && projectId && exceptions.length > 0 ? (
+        <section className="opc-action-exceptions" aria-label="Live project exceptions">
+          <h2 className="opc-action-exceptions__title">Live project exceptions</h2>
+          <p className="opc-action-exceptions__lead">
+            Computed now from progress, payments, compliance, and pending approvals.
+          </p>
+          <ul className="opc-action-centre-list">
+            {exceptions.map((item) => (
+              <li key={item.id}>
+                <button
+                  type="button"
+                  className="opc-action-centre-row"
+                  onClick={() => router.push(item.deepLink)}
+                >
+                  <span className="opc-action-centre-copy">
+                    <span className="opc-action-centre-title">{item.title}</span>
+                    <span className="opc-action-centre-body">{item.body}</span>
+                    <span className="opc-action-centre-tags">
+                      <span
+                        className={`opc-action-centre-sev opc-action-centre-sev--${item.severity}`}
+                      >
+                        {item.severity}
+                      </span>
+                      <span>{attentionCategoryLabel(item.category)}</span>
+                    </span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {!loading && !error && data && data.items.length === 0 && exceptions.length === 0 ? (
         <p className="opc-action-centre-empty">
           You&apos;re all caught up. No notifications match these filters.
         </p>
       ) : null}
 
       {!loading && data && data.items.length > 0 ? (
-        <ul className="opc-action-centre-list">
-          {data.items.map((n) => (
-            <li key={n.id}>
-              <button
-                type="button"
-                className={`opc-action-centre-row${n.isRead ? "" : " opc-action-centre-row--unread"}`}
-                onClick={() => void onRowClick(n)}
-              >
-                {!n.isRead ? <span className="opc-action-centre-pip" aria-hidden /> : null}
-                <span className="opc-action-centre-copy">
-                  <span className="opc-action-centre-title">{n.title}</span>
-                  <span className="opc-action-centre-body">{n.body}</span>
-                  <span className="opc-action-centre-tags">
-                    <span className={`opc-action-centre-sev opc-action-centre-sev--${n.severity ?? "info"}`}>
-                      {n.severity ?? "info"}
+        <>
+          {projectId && exceptions.length > 0 ? (
+            <h2 className="opc-action-exceptions__title opc-action-exceptions__title--notif">
+              Notifications
+            </h2>
+          ) : null}
+          <ul className="opc-action-centre-list">
+            {data.items.map((n) => (
+              <li key={n.id}>
+                <button
+                  type="button"
+                  className={`opc-action-centre-row${n.isRead ? "" : " opc-action-centre-row--unread"}`}
+                  onClick={() => void onRowClick(n)}
+                >
+                  {!n.isRead ? <span className="opc-action-centre-pip" aria-hidden /> : null}
+                  <span className="opc-action-centre-copy">
+                    <span className="opc-action-centre-title">{n.title}</span>
+                    <span className="opc-action-centre-body">{n.body}</span>
+                    <span className="opc-action-centre-tags">
+                      <span
+                        className={`opc-action-centre-sev opc-action-centre-sev--${n.severity ?? "info"}`}
+                      >
+                        {n.severity ?? "info"}
+                      </span>
+                      <span>{n.type.split("_").join(" ")}</span>
                     </span>
-                    <span>{n.type.split("_").join(" ")}</span>
                   </span>
-                </span>
-                <time dateTime={n.createdAt}>{relativeTime(n.createdAt)}</time>
-              </button>
-            </li>
-          ))}
-        </ul>
+                  <time dateTime={n.createdAt}>{relativeTime(n.createdAt)}</time>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
       ) : null}
 
       <p className="opc-action-centre-back">

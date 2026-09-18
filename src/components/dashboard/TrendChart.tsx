@@ -140,8 +140,9 @@ export function TrendChart({ currency, points }: Props) {
               <stop offset="100%" stopColor="var(--chart-quaternary)" stopOpacity="0.02" />
             </linearGradient>
             <linearGradient id={`g-paid-${gid}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--chart-primary)" stopOpacity="0.42" />
-              <stop offset="100%" stopColor="var(--chart-primary)" stopOpacity="0.02" />
+              {/* chart-primary is maroon after rebrand — unreadable as area on dark chart */}
+              <stop offset="0%" stopColor="#f0a8b6" stopOpacity="0.28" />
+              <stop offset="100%" stopColor="#f0a8b6" stopOpacity="0.02" />
             </linearGradient>
             <linearGradient id={`g-bar-${gid}`} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="var(--chart-tertiary)" stopOpacity="0.55" />
@@ -197,11 +198,7 @@ export function TrendChart({ currency, points }: Props) {
             filter={`url(#glow-${gid})`}
           />
           <path className="opc-trend__line opc-trend__line--cert" d={series.line("cert")} />
-          <path
-            className="opc-trend__line opc-trend__line--paid"
-            d={series.line("paid")}
-            filter={`url(#glow-${gid})`}
-          />
+          <path className="opc-trend__line opc-trend__line--paid" d={series.line("paid")} />
 
           {series.rows.map((r, i) => (
             <g key={r.month}>

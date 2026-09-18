@@ -39,7 +39,7 @@ export default function LoginPage() {
     <main className="opc-auth">
       <section className="opc-auth-hero" aria-hidden="true">
         <div className="opc-auth-hero-inner">
-          <h1>Owner Project Control</h1>
+          <h1>Yamaloon</h1>
           <p>Authoritative project control and commercial governance for capital asset owners.</p>
         </div>
       </section>
