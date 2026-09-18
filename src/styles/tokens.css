@@ -60,6 +60,8 @@
   --chart-tertiary: #2a6b8f;
   --chart-quaternary: #1f7a4d;
   --chart-quinary: #a83232;
+  /* Paid / accents on maroon panels (chart-primary alone is invisible there) */
+  --chart-on-dark: #f0a8b6;
 
 
   /* Typography — Next font vars set on <html>; fallbacks below */

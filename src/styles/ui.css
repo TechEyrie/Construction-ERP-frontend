@@ -1605,17 +1605,17 @@
 .opc-command-panel--chart .opc-trend__dot {
   stroke: var(--ink-900);
 }
-/* Paid series: chart-primary is maroon — use rose on dark panels.
+/* Paid series: chart-primary is maroon — use chart-on-dark on dark panels.
    Never set fill on the line path (open path fill becomes a solid blob). */
 .opc-command-panel--chart .opc-trend__line--paid {
-  stroke: #f0a8b6;
+  stroke: var(--chart-on-dark);
   fill: none;
 }
 .opc-command-panel--chart .opc-trend__dot--paid {
-  fill: #f0a8b6;
+  fill: var(--chart-on-dark);
 }
 .opc-command-panel--chart .opc-trend__swatch--paid {
-  background: #f0a8b6;
+  background: var(--chart-on-dark);
 }
 .opc-command-panel--chart .opc-trend__area--paid {
   opacity: 0.85;
